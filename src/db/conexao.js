@@ -8,17 +8,20 @@ const password = process.env.DB_PASSWORD;
 const port = process.env.DB_PORT;
 
 
-const pool = new Pool({
-    user,
-    host,
-    database,
-    password,
-    port,
-    // ssl: {
-    //     rejectUnauthorized: false
-    // } 
+const config = process.env.DATABASE_URL ? {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+} : {
+    user: process.env.DB_USER,
+    host: process.env.DB_LOCALHOST,
+    database: process.env.DB_DATABASE,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+};
 
-});
+const pool = new Pool(config);
 
 
 const query = (text, param) => {
