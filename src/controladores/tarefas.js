@@ -3,13 +3,16 @@ const conexao = require('../db/conexao');
 
 const cadastrarTarefa = async (req, res) => {
     const { usuario_id, descricao, setor, prioridade } = req.body
+    
+    // Converte "media" para "média" para respeitar a regra do banco de dados
+    const prioridadeFormatada = prioridade === 'media' ? 'média' : prioridade;
 
     try {        
 
         const cadTarefa = 'INSERT INTO tarefas (usuario_id, descricao, setor, prioridade) VALUES ($1, $2, $3, $4) RETURNING *';
 
 
-        const {rows, rowCount} = await conexao.query(cadTarefa, [usuario_id, descricao, setor, prioridade]);
+        const {rows, rowCount} = await conexao.query(cadTarefa, [usuario_id, descricao, setor, prioridadeFormatada]);
 
         if(rowCount === 0) {
             return res.status(400).json({mensagem: 'Não foi possível criar a Tarefa!'})
@@ -126,11 +129,14 @@ const consultarTarefasId = async (req, res) => {
 const editarTarefas = async (req, res) => {
 
     const {id, descricao, setor, prioridade } = req.body;
+    
+    // Converte "media" para "média" para respeitar a regra do banco de dados
+    const prioridadeFormatada = prioridade === 'media' ? 'média' : prioridade;
 
     try {
         const editarTarefa = 'update tarefas set descricao = $1, setor = $2, prioridade = $3 where id = $4';
     
-        const { rowCount } =  await conexao.query(editarTarefa, [descricao, setor, prioridade, id]);
+        const { rowCount } =  await conexao.query(editarTarefa, [descricao, setor, prioridadeFormatada, id]);
 
         if(rowCount === 0 ) {
             return res.status(400).json({mensagem: 'Não foi possível atualizar os dados!'});
