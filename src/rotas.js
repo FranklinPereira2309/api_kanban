@@ -1,6 +1,7 @@
 const express = require('express');
 const usuario = require('./controladores/usuarios');
 const tarefa = require('./controladores/tarefas');
+const usuariosTarefas = require('./controladores/usuarios_tarefas');
 const validarAutenticacao = require('./intermediarios/autenticacao');
 
 const rotas = express();
@@ -10,6 +11,9 @@ rotas.post('/login', usuario.loginUsuario);
 rotas.get('/usuarios', usuario.consultarUsuario);
 
 rotas.use(validarAutenticacao);
+
+rotas.post('/usuarios_tarefas', usuariosTarefas.cadastrarUsuarioTarefa);
+rotas.get('/usuarios_tarefas', usuariosTarefas.consultarUsuariosTarefas);
 
 rotas.post('/tarefas', tarefa.cadastrarTarefa);
 rotas.get('/tarefas', tarefa.consultarTarefas);
